@@ -2,7 +2,7 @@ package example
 
 import future.keywords.in
 
-analyze[risk] {
+analyze[risk_path] {
 	some index, item in input.items
-	risk := item
+	risk_path := item
 }

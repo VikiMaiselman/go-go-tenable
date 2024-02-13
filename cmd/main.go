@@ -14,13 +14,17 @@ import (
 	"strings"
 )
 
+const (
+	resourceType = "cool_resource"
+)
+
 func main() {
 	ctx := context.Background()
 	// load risk policies
 	var err error
 	var policies *loader.Result
 
-	policyAbsolutePath, _ := filepath.Abs("../iac-coding-exercise/policies/toy_example/policy.rego")
+	policyAbsolutePath, _ := filepath.Abs(fmt.Sprintf("../iac-coding-exercise/policies/%v/policy.rego", resourceType))
 	if policies, err = loader.NewFileLoader().Filtered([]string{policyAbsolutePath}, func(_ string, info os.FileInfo, _ int) bool {
 		return !info.IsDir() && !strings.HasSuffix(info.Name(), bundle.RegoExt)
 	}); err != nil {
@@ -43,13 +47,13 @@ func main() {
 	}
 
 	// read resource declaration file
-	resourceDeclarationFileAbsolutePath, _ := filepath.Abs("../iac-coding-exercise/policies/toy_example/resource.json")
+	resourceDeclarationFileAbsolutePath, _ := filepath.Abs(fmt.Sprintf("../iac-coding-exercise/policies/%v/resource.json", resourceType))
 	resourceFileContent, err := os.ReadFile(resourceDeclarationFileAbsolutePath)
 	if err != nil {
 		panic(err)
 	}
 
-	var resourceFileInput any
+	var resourceFileInput map[string]any
 	err = json.Unmarshal(resourceFileContent, &resourceFileInput)
 	if err != nil {
 		panic(err)
@@ -61,7 +65,7 @@ func main() {
 		rego.New(
 			rego.Compiler(compiler),
 			rego.PrintHook(topdown.NewPrintHook(os.Stdout)),
-			rego.Query("risk = data.example.analyze"),
+			rego.Query("risk_path = data.example.analyze"),
 			rego.Input(resourceFileInput),
 		).PrepareForEval(ctx); err != nil {
 		panic(err)
@@ -73,7 +77,7 @@ func main() {
 		panic(err)
 	}
 
-	for _, result := range resultSet {
-		fmt.Println(result.Bindings["risk"])
-	}
+	fmt.Println("Risk found in resource type: ", resourceFileInput["type"])
+	fmt.Println("Risk Paths: ", resultSet[0].Bindings["risk_path"])
+	fmt.Println("Risk Lines: <TODO Bonus>")
 }
