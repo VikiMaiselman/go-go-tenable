@@ -20,6 +20,10 @@
       "name": "sub_resource_3",
       "encrypted": false,
       "acl": ["Admin", "RiskyWrite"]
+    },
+    {
+      "name": "sub_resource_4",
+      "acl": ["Admin", "RiskyWrite"]
     }
   ]
 }

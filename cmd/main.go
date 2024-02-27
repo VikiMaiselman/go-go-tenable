@@ -68,6 +68,7 @@ func main() {
 			rego.PrintHook(topdown.NewPrintHook(os.Stdout)),
 			rego.Query("risk_path = data.example.analyze"),
 			rego.Input(resourceFileInput),
+			// rego.Trace(true), 
 		).PrepareForEval(ctx); err != nil {
 		panic(err)
 	}
@@ -79,7 +80,7 @@ func main() {
 	}
 
 	fmt.Println("Risk found in resource type: ", resourceFileInput["type"])
-	fmt.Println(resultSet)
+	// fmt.Println(resultSet)
 	fmt.Println("Risk Paths: ", resultSet[0].Bindings["risk_path"])
 	fmt.Println("Risk Lines: <TODO Bonus>")
 }
