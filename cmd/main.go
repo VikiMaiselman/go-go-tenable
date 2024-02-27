@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"log"
 
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/bundle"
@@ -18,6 +19,10 @@ import (
 const (
 	resourceType = "cool_resource"
 )
+
+func init() {
+	log.SetFlags(log.Flags() | log.Llongfile)
+}
 
 func main() {
 	ctx := context.Background()
@@ -80,7 +85,6 @@ func main() {
 	}
 
 	fmt.Println("Risk found in resource type: ", resourceFileInput["type"])
-	// fmt.Println(resultSet)
 	fmt.Println("Risk Paths: ", resultSet[0].Bindings["risk_path"])
 	fmt.Println("Risk Lines: <TODO Bonus>")
 }
