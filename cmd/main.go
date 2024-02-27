@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"log"
 
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/bundle"
@@ -19,10 +18,6 @@ import (
 const (
 	resourceType = "cool_resource"
 )
-
-func init() {
-	log.SetFlags(log.Flags() | log.Llongfile)
-}
 
 func main() {
 	ctx := context.Background()
@@ -73,7 +68,6 @@ func main() {
 			rego.PrintHook(topdown.NewPrintHook(os.Stdout)),
 			rego.Query("risk_path = data.example.analyze"),
 			rego.Input(resourceFileInput),
-			// rego.Trace(true), 
 		).PrepareForEval(ctx); err != nil {
 		panic(err)
 	}
