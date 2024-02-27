@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/bundle"
 	"github.com/open-policy-agent/opa/loader"
 	"github.com/open-policy-agent/opa/rego"
 	"github.com/open-policy-agent/opa/topdown"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 const (
@@ -78,6 +79,7 @@ func main() {
 	}
 
 	fmt.Println("Risk found in resource type: ", resourceFileInput["type"])
+	fmt.Println(resultSet)
 	fmt.Println("Risk Paths: ", resultSet[0].Bindings["risk_path"])
 	fmt.Println("Risk Lines: <TODO Bonus>")
 }
