@@ -62,16 +62,20 @@ func main() {
 
 	// query the resource declaration file for risks
 	var preparedEvalQuery rego.PreparedEvalQuery
+	r := rego.New(
+		rego.Compiler(compiler),
+		rego.PrintHook(topdown.NewPrintHook(os.Stdout)),
+		rego.Query("risk_path = data.example.analyze"),
+		rego.Input(resourceFileInput),
+		rego.Trace(true),
+	)
+
 	if preparedEvalQuery, err =
-		rego.New(
-			rego.Compiler(compiler),
-			rego.PrintHook(topdown.NewPrintHook(os.Stdout)),
-			rego.Query("risk_path = data.example.analyze"),
-			rego.Input(resourceFileInput),
-		).PrepareForEval(ctx); err != nil {
+		r.PrepareForEval(ctx); err != nil {
 		panic(err)
 	}
 
+	// ctx = rego.WithExplain(ctx, rego.Trace(true))
 	// print the resultant risks
 	var resultSet rego.ResultSet
 	if resultSet, err = preparedEvalQuery.Eval(ctx); err != nil {
@@ -79,6 +83,9 @@ func main() {
 	}
 
 	fmt.Println("Risk found in resource type: ", resourceFileInput["type"])
+	fmt.Println(resultSet, resultSet[len(resultSet)-1])
 	fmt.Println("Risk Paths: ", resultSet[0].Bindings["risk_path"])
-	fmt.Println("Risk Lines: <TODO Bonus>")
+	fmt.Println("Risk Lines: <TODO Bonus>", r)
+	rego.PrintTraceWithLocation(os.Stdout, r)
+	
 }
